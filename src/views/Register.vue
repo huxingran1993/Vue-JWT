@@ -61,9 +61,17 @@
                         </b-form-invalid-feedback>
                     </b-form-group>
                 </ValidationProvider>
-
                 <b-button block type="signUp" variant="primary">Sign Up</b-button>
+                <router-link to="/login" class="btn btn-link">Cancel</router-link>
+
             </b-form>
+        <div
+                v-if="message"
+                class="alert"
+                :class="successful ? 'alert-success' : 'alert-danger'"
+        >
+            {{message}}
+        </div>
     </ValidationObserver>
 </template>
 

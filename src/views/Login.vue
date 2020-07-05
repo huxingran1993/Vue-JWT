@@ -6,21 +6,20 @@
                 src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
                 class="profile-img-card"
             />
-            <form name="form" @submit.prevent="handlelogin">
+            <form name="form" @submit.prevent="handleLogin">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input
                         v-model="user.username"
                         v-validate="'required'"
                         type="text"
-                        class="form-control"
+                        :class="{ 'is-invalid': loading && !user.username }"
                         name="username"
                     />
-                    <div
-                        v-if="errors.has('username')"
-                        class="alert alert-danger"
-                        role="alert"
-                        >Username is required</div>
+                    <div v-show="loading && !user.username" class="invalid-feedback">
+                        Username is required
+                    </div>
+
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -28,14 +27,11 @@
                         v-model="user.password"
                         v-validate="'required'"
                         type="password"
-                        class="form-control"
+                        :class="{ 'is-invalid': loading && !user.password }"
                         name="password"
                     />
-                    <div
-                        v-if="errors.has('password')"
-                        class="alert alert-danger"
-                        role="alert"
-                    >Password is required!!</div>
+                    <div v-show="loading && !user.password" class="invalid-feedback">Password is required</div>
+
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary btn-block" :disabled="loading">
@@ -64,7 +60,7 @@
         },
         computed: {
             loggedIn() {
-                return this.$store.state.status.auth.status.loggedIn
+                return this.$store.state.auth.status.loggedIn
             }
         },
         created() {
@@ -75,12 +71,6 @@
         methods: {
             handleLogin() {
                 this.loading = true;
-                this.$validator.validateAll().then(isValid => {
-                    if (!isValid){
-                        this.loading = false
-                        return
-                    }
-
                     if (this.user.username && this.user.password){
                         this.$store.dispatch('auth/login', this.user).then(
                             () => {
@@ -92,7 +82,7 @@
                             }
                         )
                     }
-                })
+
             }
         }
     }
